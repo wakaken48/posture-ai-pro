@@ -7,7 +7,7 @@
 <title>わかば姿勢チェック v5 AI姿勢認識</title>
 <style>
 :root{--green:#236b45;--pale:#eaf4ed;--ink:#203129;--muted:#64736a;--line:#d9e4dc}
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#f5f8f5;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif}header{background:var(--green);color:#fff;padding:16px;text-align:center}header h1{font-size:20px;margin:0 0 4px}header p{font-size:12px;margin:0}main{width:min(100%,560px);margin:0 auto;padding:14px}.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:14px;box-shadow:0 2px 8px #183b2410}label{display:block;font-weight:700;font-size:14px;margin-bottom:9px}.directions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.directions button{min-height:44px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:9px 4px;font-weight:700;font-size:15px}.directions button.active{background:var(--pale);border:2px solid var(--green);color:var(--green)}.stage-wrap{display:flex;justify-content:center}.stage{position:relative;width:min(100%,390px);aspect-ratio:3/4;background:#101713;border-radius:12px;overflow:hidden;margin:0 auto}.stage video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;background:#101713}.guide{position:absolute;inset:6%;border:1px dashed #ffffffaa;border-radius:45% 45% 14% 14%;pointer-events:none}.flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:5}.flash.active{animation:cameraFlash .22s ease-out}@keyframes cameraFlash{0%{opacity:.95}100%{opacity:0}}.capture-toast{position:absolute;left:50%;top:14px;transform:translateX(-50%);z-index:6;background:#236b45;color:#fff;padding:9px 16px;border-radius:999px;font-size:14px;font-weight:800;opacity:0;pointer-events:none;white-space:nowrap}.capture-toast.show{animation:toastPop 1.25s ease-out}@keyframes toastPop{0%{opacity:0;transform:translate(-50%,-8px)}15%,75%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,-5px)}}.latest{display:none;align-items:center;gap:12px;margin-top:12px;padding:10px;background:#eaf4ed;border:1px solid #b9d7c2;border-radius:12px}.latest.visible{display:flex}.latest img{width:76px;height:102px;object-fit:cover;border-radius:8px;background:#18221b}.latest strong{display:block;color:#236b45;font-size:15px;margin-bottom:5px}.latest span{font-size:12px;color:#42564a;line-height:1.5}.hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;color:#fff;background:#101713;font-size:14px;pointer-events:none}.actions{display:flex;gap:8px;margin-top:11px}.action{flex:1;min-height:48px;border:0;border-radius:11px;padding:12px 10px;font-size:15px;font-weight:700;background:var(--green);color:#fff}.secondary{background:#e9efea;color:var(--ink)}button:disabled{opacity:.45}.status{font-size:13px;color:var(--muted);margin:10px 0 0;line-height:1.55;min-height:1.5em}.shots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.shot{min-width:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fafcfa}.shot img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;background:#18221b}.shot .empty{aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--muted);font-size:12px}.shot .caption{font-size:12px;padding:7px 2px;text-align:center;font-weight:700}.analysis-card{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fbfdfb}.analysis-card h3{font-size:15px;margin:0 0 8px;color:var(--green)}.analysis-card img{display:block;width:100%;max-width:260px;margin:0 auto;border-radius:8px;background:#18221b}.analysis-card p{font-size:13px;line-height:1.55;margin:8px 0 0}.ai-pill{display:inline-block;padding:4px 8px;border-radius:999px;background:#eaf4ed;color:#236b45;font-size:12px;font-weight:700;margin-top:6px}.foot{font-size:11px;color:var(--muted);line-height:1.6;padding:0 4px 20px}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#f5f8f5;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif}header{background:var(--green);color:#fff;padding:16px;text-align:center}header h1{font-size:20px;margin:0 0 4px}header p{font-size:12px;margin:0}main{width:min(100%,560px);margin:0 auto;padding:14px}.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:14px;box-shadow:0 2px 8px #183b2410}label{display:block;font-weight:700;font-size:14px;margin-bottom:9px}.directions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.directions button{min-height:44px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:9px 4px;font-weight:700;font-size:15px}.directions button.active{background:var(--pale);border:2px solid var(--green);color:var(--green)}.stage-wrap{display:flex;justify-content:center}.stage{position:relative;width:min(100%,390px);aspect-ratio:3/4;background:#101713;border-radius:12px;overflow:hidden;margin:0 auto}.stage video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;background:#101713}.guide{position:absolute;inset:6%;border:1px dashed #ffffffaa;border-radius:45% 45% 14% 14%;pointer-events:none}.flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:5}.flash.active{opacity:.95;animation:cameraFlash .28s ease-out}@keyframes cameraFlash{0%{opacity:.95}100%{opacity:0}}.capture-toast{position:absolute;left:50%;top:14px;transform:translateX(-50%);z-index:6;background:#236b45;color:#fff;padding:9px 16px;border-radius:999px;font-size:14px;font-weight:800;opacity:0;pointer-events:none;white-space:nowrap}.capture-toast.show{opacity:1;animation:toastPop 1.4s ease-out}@keyframes toastPop{0%{opacity:0;transform:translate(-50%,-8px)}15%,75%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,-5px)}}.latest{display:none;align-items:center;gap:12px;margin-top:12px;padding:10px;background:#eaf4ed;border:1px solid #b9d7c2;border-radius:12px}.latest.visible{display:flex}.latest img{width:76px;height:102px;object-fit:cover;border-radius:8px;background:#18221b}.latest strong{display:block;color:#236b45;font-size:15px;margin-bottom:5px}.latest span{font-size:12px;color:#42564a;line-height:1.5}.hint[hidden]{display:none !important}.hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;color:#fff;background:#101713;font-size:14px;pointer-events:none}.actions{display:flex;gap:8px;margin-top:11px}.action{flex:1;min-height:48px;border:0;border-radius:11px;padding:12px 10px;font-size:15px;font-weight:700;background:var(--green);color:#fff}.secondary{background:#e9efea;color:var(--ink)}button:disabled{opacity:.45}.status{font-size:13px;color:var(--muted);margin:10px 0 0;line-height:1.55;min-height:1.5em}.shots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.shot{min-width:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fafcfa}.shot img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;background:#18221b}.shot .empty{aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--muted);font-size:12px}.shot .caption{font-size:12px;padding:7px 2px;text-align:center;font-weight:700}.analysis-card{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fbfdfb}.analysis-card h3{font-size:15px;margin:0 0 8px;color:var(--green)}.analysis-card img{display:block;width:100%;max-width:260px;margin:0 auto;border-radius:8px;background:#18221b}.analysis-card p{font-size:13px;line-height:1.55;margin:8px 0 0}.ai-pill{display:inline-block;padding:4px 8px;border-radius:999px;background:#eaf4ed;color:#236b45;font-size:12px;font-weight:700;margin-top:6px}.foot{font-size:11px;color:var(--muted);line-height:1.6;padding:0 4px 20px}
 </style>
 </head>
 <body>
@@ -80,14 +80,45 @@ window.__postureAI={getPoseLandmarker,poseConnections};
   flash.classList.remove('active'); captureToast.classList.remove('show');
   void flash.offsetWidth; void captureToast.offsetWidth;
   flash.classList.add('active'); captureToast.classList.add('show');
+  setTimeout(()=>flash.classList.remove('active'),320);
+  setTimeout(()=>captureToast.classList.remove('show'),1500);
   $('latestImage').src=imageUrl; $('latestTitle').textContent=dir+'を撮影しました！';
   $('latestText').textContent='写真はこの画面のすぐ下で確認できます。撮り直す場合はもう一度シャッターを押してください。';
   $('latestPreview').classList.add('visible');
   // iPhone Safariでは消音設定等により音が鳴らない場合があるため、画面表示も併用
-  try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;if(!audioContext)audioContext=new AC();if(audioContext.state==='suspended')audioContext.resume();const now=audioContext.currentTime;[0,0.12].forEach((offset,i)=>{const osc=audioContext.createOscillator(),gain=audioContext.createGain();osc.type='sine';osc.frequency.value=i?1320:990;gain.gain.setValueAtTime(0.0001,now+offset);gain.gain.exponentialRampToValueAtTime(0.12,now+offset+0.012);gain.gain.exponentialRampToValueAtTime(0.0001,now+offset+0.085);osc.connect(gain);gain.connect(audioContext.destination);osc.start(now+offset);osc.stop(now+offset+0.09);});}catch(e){/* 音声が使えない端末でも撮影自体は継続 */}
+  try{
+   const AC=window.AudioContext||window.webkitAudioContext;
+   if(AC){
+    if(!audioContext) audioContext=new AC();
+    const play=()=>{
+     const now=audioContext.currentTime;
+     [0,0.16].forEach((offset,i)=>{
+      const osc=audioContext.createOscillator(),gain=audioContext.createGain();
+      osc.type='sine'; osc.frequency.value=i?1480:1080;
+      gain.gain.setValueAtTime(0.0001,now+offset);
+      gain.gain.exponentialRampToValueAtTime(0.22,now+offset+0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001,now+offset+0.13);
+      osc.connect(gain); gain.connect(audioContext.destination);
+      osc.start(now+offset); osc.stop(now+offset+0.14);
+     });
+    };
+    if(audioContext.state==='suspended') audioContext.resume().then(play).catch(()=>{});
+    else play();
+   }
+  }catch(e){/* 音声が使えない端末でも撮影自体は継続 */}
  }
  function stopStream(){if(stream){stream.getTracks().forEach(track=>track.stop());stream=null;}video.srcObject=null;captureBtn.disabled=true;}
+ function primeAudio(){
+  try{
+   const AC=window.AudioContext||window.webkitAudioContext;
+   if(AC){
+    if(!audioContext) audioContext=new AC();
+    if(audioContext.state==='suspended') audioContext.resume();
+   }
+  }catch(e){}
+ }
  async function startCamera(){
+  primeAudio();
   if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){say('カメラを利用できません。iPhoneのSafariでhttps://から始まるURLを開いてください。');return;}
   startBtn.disabled=true; say('カメラを起動しています…');
   try{
