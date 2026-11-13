@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#176b4d">
+<meta name="description" content="整骨院・整体院向けの姿勢チェック試作品">
+<title>姿勢AI Pro Ver.0.1</title>
+<style>
+:root{--green:#176b4d;--green2:#e8f4ee;--ink:#183129;--muted:#65756e;--line:#dce7e1;--bg:#f5f8f6;--white:#fff;--warn:#fff4dc}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.55}
+header{background:var(--green);color:#fff;padding:18px 16px 16px}header .brand{font-size:12px;opacity:.85;letter-spacing:.08em}header h1{font-size:23px;margin:2px 0 0}header p{font-size:12px;margin:4px 0 0;opacity:.9}
+main{max-width:850px;margin:0 auto;padding:16px 14px 40px}.panel{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:16px;margin:0 0 14px;box-shadow:0 2px 10px #153d2710}.panel h2{font-size:17px;margin:0 0 10px}.sub{font-size:12px;color:var(--muted)}label{display:block;font-size:13px;font-weight:600;margin:8px 0 5px}input{width:100%;border:1px solid var(--line);border-radius:10px;padding:12px;font-size:16px;background:#fff;color:var(--ink)}.steps{display:flex;gap:7px;margin:12px 0}.step{flex:1;text-align:center;border-radius:10px;padding:9px 4px;background:#edf2ef;color:var(--muted);font-size:12px;font-weight:700}.step.active{background:var(--green2);color:var(--green);outline:1px solid #b6d7c5}.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}.tab{border:1px solid var(--line);background:#fff;border-radius:10px;padding:11px 5px;font-size:14px;font-weight:700;color:var(--ink)}.tab.active{background:var(--green);border-color:var(--green);color:#fff}.cameraBox{position:relative;background:#101715;border-radius:14px;overflow:hidden;min-height:220px;aspect-ratio:3/4;max-height:570px;display:flex;align-items:center;justify-content:center}.cameraBox video,.cameraBox canvas,.cameraBox img{position:absolute;width:100%;height:100%;object-fit:contain}.cameraBox canvas{pointer-events:none}.cameraBox .placeholder{color:#d8e3dd;text-align:center;padding:24px;font-size:14px}.controls{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.btn{border:0;border-radius:11px;padding:12px 15px;font-size:14px;font-weight:700;background:var(--green);color:#fff;cursor:pointer}.btn.secondary{background:#edf3ef;color:var(--green);border:1px solid var(--line)}.btn.danger{background:#fff0ef;color:#a3332a;border:1px solid #f0d1ce}.btn:disabled{opacity:.45;cursor:not-allowed}.status{font-size:13px;margin-top:9px;color:var(--muted);min-height:22px}.notice{background:var(--warn);border:1px solid #f0dfb8;border-radius:12px;padding:11px 12px;font-size:12px;color:#694d16;margin:12px 0}.good{background:var(--green2);border:1px solid #c8e1d2;border-radius:12px;padding:11px 12px;font-size:12px;color:#225c43}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.metric{border:1px solid var(--line);border-radius:12px;padding:12px}.metric strong{display:block;font-size:19px;color:var(--green);margin-top:3px}.metric span{font-size:12px;color:var(--muted)}.viewResult{border:1px solid var(--line);border-radius:12px;padding:12px;margin:10px 0}.viewResult h3{font-size:14px;margin:0 0 8px}.viewResult img{width:100%;max-height:300px;object-fit:contain;background:#f2f5f3;border-radius:8px}.hidden{display:none!important}footer{text-align:center;color:var(--muted);font-size:11px;padding:10px}
+@media(min-width:700px){.cameraBox{aspect-ratio:4/3}.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media print{header,.noPrint,#setupPanel,#cameraPanel,.notice,.good,footer{display:none!important}body{background:#fff}.panel{box-shadow:none;border:0;padding:0}.viewResult{break-inside:avoid}.viewResult img{max-height:230px}}
+</style>
+</head>
+<body>
+<header><div class="brand">WAKABA SEIKOTSUIN · PROTOTYPE</div><h1>姿勢AI Pro <small style="font-size:12px;font-weight:500">Ver.0.1</small></h1><p>正面・側面・背面の姿勢チェック</p></header>
+<main>
+<section class="panel" id="setupPanel">
+<h2>① 撮影情報</h2>
+<label for="patientCode">患者番号（氏名は入力しないでください）</label><input id="patientCode" maxlength="24" placeholder="例：W-001" autocomplete="off">
+<p class="sub">この試作品は入力内容・写真を端末内のメモリだけで扱います。ページを閉じると消えます。</p>
+<div class="steps"><div class="step active" id="stepFront">1 正面</div><div class="step" id="stepSide">2 側面</div><div class="step" id="stepBack">3 背面</div></div>
+</section>
+<section class="panel" id="cameraPanel">
+<h2>② 撮影・AI検出</h2>
+<div class="tabs"><button class="tab active" data-view="front">正面</button><button class="tab" data-view="side">側面</button><button class="tab" data-view="back">背面</button></div>
+<div class="cameraBox" id="cameraBox"><div class="placeholder" id="placeholder">「カメラを起動」を押してください。<br>全身が画面に入る距離で撮影します。</div><video id="video" playsinline autoplay muted class="hidden"></video><canvas id="overlay" class="hidden"></canvas><img id="still" class="hidden" alt="撮影した姿勢画像"></div>
+<div class="controls"><button class="btn" id="startCamera">カメラを起動</button><button class="btn" id="capture" disabled>この向きで撮影・解析</button><button class="btn secondary" id="retake" disabled>撮り直す</button><button class="btn secondary" id="stopCamera" disabled>カメラ停止</button></div>
+<div class="status" id="status" role="status">準備中：AIモデルは初回起動時に読み込みます。</div>
+<div class="notice">撮影のコツ：カメラを床と水平にし、2.5〜3m程度離れて、頭から足先まで写してください。体に沿う服装・明るい場所・無地の背景が適しています。正面と背面は自然に直立し、側面は真横を向いてください。</div>
+</section>
+<section class="panel">
+<h2>③ 分析結果</h2>
+<p class="sub">撮影した方向の結果がここに表示されます。3方向を撮影するとまとめて印刷できます。</p>
+<div id="results"><p class="sub">まだ撮影されていません。</p></div>
+<div class="controls noPrint"><button class="btn" id="printReport" disabled>レポートを印刷／PDF保存</button><button class="btn secondary" id="resetAll">最初からやり直す</button></div>
+</section>
+<section class="panel">
+<h2>④ この試作品について</h2>
+<div class="good">AIは写真から人体の目安となる33点を推定します。表示値は画像上の位置関係であり、骨格の正確な位置・医学的診断・治療効果を示すものではありません。</div>
+<p class="sub">撮影画像は外部サーバーに送信せず、解析はこのブラウザ内で行います。ただし、AIライブラリとモデルファイルはGoogle配布元などからダウンロードします。実患者の運用前に、同意取得・撮影環境・精度・端末のプライバシー設定を確認してください。</p>
+</section>
+</main>
+<footer>姿勢AI Pro Ver.0.1 · 試験用ソフトウェア · 医療診断には使用しないでください</footer>
+<script type="module">
+import { FilesetResolver, PoseLandmarker, DrawingUtils } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22";
+const MODEL_URL = "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task";
+const WASM_URL = "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/wasm";
+const $ = (id)=>document.getElementById(id);
+const video=$('video'), overlay=$('overlay'), ctx=overlay.getContext('2d'), still=$('still');
+let landmarker=null, stream=null, currentView='front', results={front:null,side:null,back:null};
+const viewNames={front:'正面',side:'側面',back:'背面'};
+function setStatus(msg){$('status').textContent=msg;}
+function setStep(){['front','side','back'].forEach((v,i)=>{$('step'+v[0].toUpperCase()+v.slice(1)).classList.toggle('active',v===currentView);});}
+function stopCamera(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}video.srcObject=null;video.classList.add('hidden');$('stopCamera').disabled=true;$('capture').disabled=true;}
+async function loadAI(){if(landmarker)return;setStatus('AIモデルを読み込んでいます。初回は少し時間がかかります…');const vision=await FilesetResolver.forVisionTasks(WASM_URL);landmarker=await PoseLandmarker.createFromOptions(vision,{baseOptions:{modelAssetPath:MODEL_URL},runningMode:'IMAGE',numPoses:1,minPoseDetectionConfidence:.55,minPosePresenceConfidence:.55});setStatus('AIの準備ができました。カメラを起動してください。');}
+$('startCamera').addEventListener('click',async()=>{try{await loadAI();if(!navigator.mediaDevices?.getUserMedia)throw new Error('このページではカメラを利用できません。HTTPSのURLで開いてください。');stopCamera();stream=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:1920}}});video.srcObject=stream;video.classList.remove('hidden');still.classList.add('hidden');overlay.classList.add('hidden');$('placeholder').classList.add('hidden');await video.play();$('capture').disabled=false;$('stopCamera').disabled=false;setStatus('カメラ起動中：全身が入る位置に調整してください。');}catch(e){setStatus('起動できませんでした：'+e.message+'。Safariのカメラ許可とHTTPS接続を確認してください。');}});
+function visible(p){return (p?.visibility??1)>.45;}
+function midpoint(a,b){return {x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
+function angleDeg(a,b){return Math.atan2((b.y-a.y),(b.x-a.x))*180/Math.PI;}
+function signedTilt(a,b){let d=angleDeg(a,b);while(d>90)d-=180;while(d< -90)d+=180;return d;}
+function fmt(n){return (Math.round(n*10)/10).toFixed(1);}
+function analyse(lm,view){const get=(i)=>lm[i];const out=[];
+ if(view==='front'||view==='back'){
+  const ls=get(11),rs=get(12),lh=get(23),rh=get(24),lk=get(25),rk=get(26),la=get(27),ra=get(28);
+  if([ls,rs].every(visible))out.push({label:'肩のライン傾斜（画像上）',value:fmt(signedTilt(ls,rs))+'°',note:'左右の肩ランドマークを結んだ線の傾き'});
+  if([lh,rh].every(visible))out.push({label:'骨盤ライン傾斜（画像上）',value:fmt(signedTilt(lh,rh))+'°',note:'左右の股関節ランドマークを結んだ線の傾き'});
+  if([lk,rk].every(visible)&&[la,ra].every(visible)){const knee=Math.abs(lk.y-rk.y)*100,ankle=Math.abs(la.y-ra.y)*100;out.push({label:'膝の高さの差',value:fmt(knee)+'%（画像高比）',note:'左右の膝ランドマークの縦方向の差'});out.push({label:'足首の高さの差',value:fmt(ankle)+'%（画像高比）',note:'左右の足首ランドマークの縦方向の差'});}
+ } else {
+  const nose=get(0),earL=get(7),earR=get(8),shoulder=midpoint(get(11),get(12)),hip=midpoint(get(23),get(24)),ankle=midpoint(get(27),get(28));
+  if(visible(nose)&&visible(shoulder)&&visible(ankle)){const bodyH=Math.max(.01,Math.abs(ankle.y-shoulder.y));const ratio=Math.abs(nose.x-shoulder.x)/bodyH*100;out.push({label:'頭部と肩の前後位置差',value:fmt(ratio)+'%（肩〜足首高比）',note:'画像上の水平距離。撮影方向・向きにより解釈が変わります'});}
+  if(visible(shoulder)&&visible(hip)&&visible(ankle)){const trunk=signedTilt(shoulder,hip);out.push({label:'肩〜股関節ライン傾斜',value:fmt(trunk)+'°',note:'側面画像上の体幹ラインの傾き'});const body=signedTilt(hip,ankle);out.push({label:'股関節〜足首ライン傾斜',value:fmt(body)+'°',note:'側面画像上の下肢ラインの傾き'});}
+ }
+ return out;
+}
+function drawSkeleton(lm,w,h){overlay.width=w;overlay.height=h;ctx.clearRect(0,0,w,h);const connections=PoseLandmarker.POSE_CONNECTIONS;ctx.lineWidth=Math.max(2,w/240);ctx.strokeStyle='#00d58a';ctx.fillStyle='#ffcf40';for(const c of connections){const a=lm[c.start],b=lm[c.end];if(visible(a)&&visible(b)){ctx.beginPath();ctx.moveTo(a.x*w,a.y*h);ctx.lineTo(b.x*w,b.y*h);ctx.stroke();}}for(const p of lm){if(visible(p)){ctx.beginPath();ctx.arc(p.x*w,p.y*h,Math.max(3,w/150),0,Math.PI*2);ctx.fill();}}}
+$('capture').addEventListener('click',()=>{try{if(!landmarker||!video.videoWidth)throw new Error('カメラ映像が準備できていません。');const c=document.createElement('canvas');c.width=video.videoWidth;c.height=video.videoHeight;c.getContext('2d').drawImage(video,0,0,c.width,c.height);const result=landmarker.detect(c);if(!result.landmarks?.length){setStatus('人体を検出できませんでした。全身を画面に入れ、明るい場所で撮り直してください。');return;}const lm=result.landmarks[0];drawSkeleton(lm,c.width,c.height);const annotated=document.createElement('canvas');annotated.width=c.width;annotated.height=c.height;annotated.getContext('2d').drawImage(c,0,0);annotated.getContext('2d').drawImage(overlay,0,0);const dataUrl=annotated.toDataURL('image/jpeg',.82);results[currentView]={image:dataUrl,metrics:analyse(lm,currentView),capturedAt:new Date().toLocaleString('ja-JP')};still.src=dataUrl;still.classList.remove('hidden');video.classList.add('hidden');overlay.classList.add('hidden');$('capture').disabled=true;$('retake').disabled=false;renderResults();setStatus(viewNames[currentView]+'を解析しました。次の方向を選んで撮影してください。');stopCamera();}catch(e){setStatus('解析エラー：'+e.message);}});
+$('retake').addEventListener('click',()=>{if(results[currentView])results[currentView]=null;renderResults();still.classList.add('hidden');$('retake').disabled=true;$('startCamera').click();});
+$('stopCamera').addEventListener('click',()=>{stopCamera();setStatus('カメラを停止しました。');});
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{stopCamera();currentView=b.dataset.view;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));still.classList.toggle('hidden',!results[currentView]);if(results[currentView])still.src=results[currentView].image;else $('placeholder').classList.remove('hidden');video.classList.add('hidden');overlay.classList.add('hidden');$('retake').disabled=!results[currentView];setStep();setStatus(viewNames[currentView]+'を選択中です。カメラを起動してください。');}));
+function renderResults(){const root=$('results');const keys=['front','side','back'].filter(k=>results[k]);if(!keys.length){root.innerHTML='<p class="sub">まだ撮影されていません。</p>';$('printReport').disabled=true;return;}const patient=$('patientCode').value.trim()||'未入力';root.innerHTML=`<p><b>患者番号：</b>${escapeHtml(patient)}</p><p class="sub">撮影結果はこの画面を開いている間だけ保持されます。</p>`+keys.map(k=>{const r=results[k];return `<article class="viewResult"><h3>${viewNames[k]} · ${r.capturedAt}</h3><img src="${r.image}" alt="${viewNames[k]}の骨格検出結果"><div class="grid">${r.metrics.map(m=>`<div class="metric"><span>${m.label}</span><strong>${m.value}</strong><span>${m.note}</span></div>`).join('')}</div></article>`}).join('');$('printReport').disabled=false;}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+$('printReport').addEventListener('click',()=>window.print());
+$('resetAll').addEventListener('click',()=>{stopCamera();results={front:null,side:null,back:null};$('patientCode').value='';still.classList.add('hidden');$('placeholder').classList.remove('hidden');$('retake').disabled=true;currentView='front';document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.view==='front'));setStep();renderResults();setStatus('リセットしました。');});
+window.addEventListener('pagehide',()=>{stopCamera();});
+loadAI().catch(e=>setStatus('AIの読み込みに失敗しました。通信環境を確認してページを再読み込みしてください。詳細：'+e.message));
+</script>
+</body>
+</html>
