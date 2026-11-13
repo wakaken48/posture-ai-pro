@@ -7,75 +7,90 @@
 <title>わかば姿勢チェック</title>
 <style>
 :root{--green:#236b45;--pale:#eaf4ed;--ink:#203129;--muted:#64736a;--line:#d9e4dc}
-*{box-sizing:border-box}body{margin:0;background:#f5f8f5;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif}
-header{background:var(--green);color:#fff;padding:18px 16px 16px;text-align:center}header h1{font-size:20px;margin:0 0 5px}header p{font-size:12px;margin:0;opacity:.9}
-main{max-width:760px;margin:0 auto;padding:16px}.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:14px;box-shadow:0 2px 8px #183b2410}
-label{display:block;font-weight:700;font-size:14px;margin-bottom:8px}.directions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.directions button{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:11px 4px;font-weight:700}.directions button.active{background:var(--pale);border:2px solid var(--green);color:var(--green)}
-.preview{position:relative;background:#101713;border-radius:12px;overflow:hidden;aspect-ratio:3/4;max-height:65vh;display:flex;align-items:center;justify-content:center}video,canvas#liveCanvas{width:100%;height:100%;object-fit:contain}.hint{color:#dce8df;text-align:center;padding:20px;font-size:14px}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}button.action{border:0;border-radius:11px;padding:13px 14px;font-size:15px;font-weight:700;flex:1;min-width:120px;background:var(--green);color:#fff}button.secondary{background:#e9efea;color:var(--ink)}button:disabled{opacity:.45}.status{font-size:13px;color:var(--muted);margin:10px 0 0;line-height:1.6}.shots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.shot{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fafcfa}.shot img{display:block;width:100%;aspect-ratio:3/4;object-fit:contain;background:#18221b}.shot div{font-size:12px;padding:7px;text-align:center;font-weight:700}.empty{font-size:12px;color:var(--muted);text-align:center;padding:20px 4px}.foot{font-size:11px;color:var(--muted);line-height:1.6;padding:0 4px 18px}
-@media(min-width:650px){.layout{display:grid;grid-template-columns:1.1fr .9fr;gap:14px}.preview{max-height:620px}}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#f5f8f5;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif}header{background:var(--green);color:#fff;padding:16px;text-align:center}header h1{font-size:20px;margin:0 0 4px}header p{font-size:12px;margin:0}main{width:min(100%,560px);margin:0 auto;padding:14px}.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:14px;box-shadow:0 2px 8px #183b2410}label{display:block;font-weight:700;font-size:14px;margin-bottom:9px}.directions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.directions button{min-height:44px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:9px 4px;font-weight:700;font-size:15px}.directions button.active{background:var(--pale);border:2px solid var(--green);color:var(--green)}.stage-wrap{display:flex;justify-content:center}.stage{position:relative;width:min(100%,390px);aspect-ratio:3/4;background:#101713;border-radius:12px;overflow:hidden;margin:0 auto}.stage video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;background:#101713}.guide{position:absolute;inset:6%;border:1px dashed #ffffffaa;border-radius:45% 45% 14% 14%;pointer-events:none}.hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;color:#fff;background:#101713;font-size:14px;pointer-events:none}.actions{display:flex;gap:8px;margin-top:11px}.action{flex:1;min-height:48px;border:0;border-radius:11px;padding:12px 10px;font-size:15px;font-weight:700;background:var(--green);color:#fff}.secondary{background:#e9efea;color:var(--ink)}button:disabled{opacity:.45}.status{font-size:13px;color:var(--muted);margin:10px 0 0;line-height:1.55;min-height:1.5em}.shots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.shot{min-width:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fafcfa}.shot img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;background:#18221b}.shot .empty{aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--muted);font-size:12px}.shot .caption{font-size:12px;padding:7px 2px;text-align:center;font-weight:700}.foot{font-size:11px;color:var(--muted);line-height:1.6;padding:0 4px 20px}
 </style>
 </head>
 <body>
-<header><h1>わかば姿勢チェック</h1><p>正面・側面・背面の写真撮影</p></header>
+<header><h1>わかば姿勢チェック</h1><p>正面・側面・背面を縦向きで撮影</p></header>
 <main>
-<div class="layout">
 <section class="panel">
-<label>撮影する方向</label>
-<div class="directions" role="group" aria-label="撮影方向">
-<button class="active" data-dir="正面" type="button">正面</button><button data-dir="側面" type="button">側面</button><button data-dir="背面" type="button">背面</button>
+<label>① 撮影する方向</label>
+<div class="directions" aria-label="撮影方向">
+<button type="button" class="active" data-dir="正面">正面</button><button type="button" data-dir="側面">側面</button><button type="button" data-dir="背面">背面</button>
 </div>
-<div style="height:12px"></div>
-<label>カメラ映像</label>
-<div class="preview" id="preview"><div class="hint" id="hint">「カメラを起動」を押してください</div><video id="video" autoplay muted playsinline></video></div>
-<div class="actions">
-<button class="action" id="startBtn" type="button">カメラを起動</button>
-<button class="action secondary" id="switchBtn" type="button" disabled>カメラ切替</button>
-</div>
-<div class="actions"><button class="action" id="captureBtn" type="button" disabled>この方向を撮影</button></div>
-<p class="status" id="status" aria-live="polite">撮影した写真はこの画面内で確認できます。写真はサーバーへ送信しません。</p>
+<div style="height:14px"></div>
+<label>② カメラ映像（縦長 3:4）</label>
+<div class="stage-wrap"><div class="stage"><video id="video" autoplay muted playsinline></video><div class="hint" id="hint">「カメラを起動」を押してください</div><div class="guide" aria-hidden="true"></div></div></div>
+<div class="actions"><button type="button" class="action" id="startBtn">カメラを起動</button><button type="button" class="action secondary" id="switchBtn" disabled>カメラ切替</button></div>
+<div class="actions"><button type="button" class="action" id="captureBtn" disabled>● 撮影する</button></div>
+<p class="status" id="status" role="status" aria-live="polite">カメラ起動後、方向を選んで撮影してください。</p>
 </section>
 <section class="panel">
-<label>撮影した写真</label>
+<label>③ 撮影した写真</label>
 <div class="shots" id="shots">
 <div class="shot"><div class="empty">正面<br>未撮影</div></div><div class="shot"><div class="empty">側面<br>未撮影</div></div><div class="shot"><div class="empty">背面<br>未撮影</div></div>
 </div>
-<div class="actions"><button class="action secondary" id="downloadBtn" type="button" disabled>3枚をまとめて保存</button><button class="action secondary" id="clearBtn" type="button">写真を消去</button></div>
-<p class="status">撮影後は写真を確認し、必要なら同じ方向を撮り直せます。保存ボタンで写真を1枚ずつダウンロードできます。</p>
+<div class="actions"><button type="button" class="action secondary" id="saveBtn" disabled>撮影写真を保存</button><button type="button" class="action secondary" id="clearBtn">写真を消去</button></div>
+<p class="status">写真はこの端末内だけで処理し、サーバーには送信しません。保存は撮影後に方向ごとに行えます。</p>
 </section>
-</div>
-<div class="foot">※この段階は撮影・確認機能です。姿勢の自動判定や医療的な診断は行いません。撮影時は本人の同意を得て、周囲に他の人が写らないようにしてください。</div>
+<p class="foot">※この段階は撮影・確認機能です。姿勢の自動判定や医療的な診断は行いません。撮影する方の同意を得てご利用ください。</p>
 </main>
 <script>
-const video=document.getElementById('video');
-const hint=document.getElementById('hint');
-const statusEl=document.getElementById('status');
-const startBtn=document.getElementById('startBtn');
-const switchBtn=document.getElementById('switchBtn');
-const captureBtn=document.getElementById('captureBtn');
-const downloadBtn=document.getElementById('downloadBtn');
-const shotsEl=document.getElementById('shots');
-let stream=null, facing='environment', currentDir='正面';
-const photos={正面:null,側面:null,背面:null};
-const buttons=[...document.querySelectorAll('[data-dir]')];
-buttons.forEach(b=>b.addEventListener('click',()=>{currentDir=b.dataset.dir;buttons.forEach(x=>x.classList.toggle('active',x===b));statusEl.textContent=currentDir+'を撮影できます。撮影済みでも撮り直せます。'}));
-async function stopCamera(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}video.srcObject=null;}
-async function startCamera(){
- if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){statusEl.textContent='このブラウザではカメラを利用できません。SafariでHTTPSのページを開いてください。';return;}
- startBtn.disabled=true;statusEl.textContent='カメラを起動しています…';
- try{await stopCamera();stream=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:facing},width:{ideal:1280},height:{ideal:1600}}});video.srcObject=stream;await video.play();hint.hidden=true;captureBtn.disabled=false;switchBtn.disabled=false;startBtn.textContent='カメラ再起動';statusEl.textContent='カメラが起動しました。撮影方向を選んで撮影してください。';}
- catch(e){let msg='カメラを起動できませんでした。';if(e.name==='NotAllowedError')msg='カメラの使用が許可されていません。iPhoneの設定またはSafariのサイト設定でカメラを許可してください。';else if(e.name==='NotFoundError')msg='利用できるカメラが見つかりません。';else if(e.name==='NotReadableError')msg='カメラを他のアプリが使用中の可能性があります。';statusEl.textContent=msg+' ('+e.name+')';}
- finally{startBtn.disabled=false;}
-}
-startBtn.addEventListener('click',startCamera);
-switchBtn.addEventListener('click',async()=>{facing=facing==='environment'?'user':'environment';await startCamera();});
-captureBtn.addEventListener('click',()=>{
- if(!video.videoWidth||!video.videoHeight){statusEl.textContent='映像の準備ができていません。少し待ってから撮影してください。';return;}
- const c=document.createElement('canvas');c.width=video.videoWidth;c.height=video.videoHeight;c.getContext('2d').drawImage(video,0,0,c.width,c.height);
- photos[currentDir]=c.toDataURL('image/jpeg',.92);renderShots();statusEl.textContent=currentDir+'を撮影しました。別の方向を選ぶか、撮り直してください。';
-});
-function renderShots(){shotsEl.innerHTML='';['正面','側面','背面'].forEach(dir=>{const card=document.createElement('div');card.className='shot';if(photos[dir]){const img=document.createElement('img');img.src=photos[dir];img.alt=dir+'の撮影写真';const label=document.createElement('div');label.textContent=dir+'・撮影済み';card.append(img,label);}else{const empty=document.createElement('div');empty.className='empty';empty.innerHTML=dir+'<br>未撮影';card.append(empty);}shotsEl.append(card);});downloadBtn.disabled=!Object.values(photos).some(Boolean);}
-downloadBtn.addEventListener('click',()=>{let count=0;['正面','側面','背面'].forEach((dir,i)=>{if(!photos[dir])return;count++;const a=document.createElement('a');a.href=photos[dir];a.download='姿勢写真_'+dir+'.jpg';document.body.append(a);a.click();a.remove();});statusEl.textContent=count+'枚の保存を開始しました。iPhoneではダウンロードまたは写真の共有メニューをご確認ください。';});
-document.getElementById('clearBtn').addEventListener('click',()=>{['正面','側面','背面'].forEach(d=>photos[d]=null);renderShots();statusEl.textContent='撮影した写真を消去しました。';});
-window.addEventListener('pagehide',stopCamera);
+(() => {
+ 'use strict';
+ const $ = id => document.getElementById(id);
+ const video=$('video'), hint=$('hint'), status=$('status');
+ const startBtn=$('startBtn'), switchBtn=$('switchBtn'), captureBtn=$('captureBtn'), saveBtn=$('saveBtn');
+ const directions=['正面','側面','背面'];
+ const photos={正面:null,側面:null,背面:null};
+ let stream=null, facing='environment', currentDir='正面';
+ const dirButtons=Array.from(document.querySelectorAll('[data-dir]'));
+ function say(message){status.textContent=message;}
+ function stopStream(){if(stream){stream.getTracks().forEach(track=>track.stop());stream=null;}video.srcObject=null;captureBtn.disabled=true;}
+ async function startCamera(){
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){say('カメラを利用できません。iPhoneのSafariでhttps://から始まるURLを開いてください。');return;}
+  startBtn.disabled=true; say('カメラを起動しています…');
+  try{
+   stopStream();
+   stream=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:facing},width:{ideal:1080},height:{ideal:1440}}});
+   video.srcObject=stream;
+   await new Promise((resolve,reject)=>{if(video.readyState>=2){resolve();return;}const timer=setTimeout(()=>reject(new Error('映像の準備がタイムアウトしました')),10000);video.onloadedmetadata=()=>{clearTimeout(timer);resolve();};});
+   await video.play(); hint.hidden=true; captureBtn.disabled=false; switchBtn.disabled=false; startBtn.textContent='カメラ再起動';
+   say('カメラ起動済み。全身が縦長の枠に入る位置に立って撮影してください。');
+  }catch(e){stopStream();let msg='カメラを起動できませんでした。';if(e.name==='NotAllowedError')msg='カメラの使用が許可されていません。Safariのサイト設定でカメラを許可してください。';else if(e.name==='NotFoundError')msg='カメラが見つかりません。';else if(e.name==='NotReadableError')msg='カメラを他のアプリが使用中の可能性があります。';say(msg+'（'+(e.message||e.name)+'）');}
+  finally{startBtn.disabled=false;}
+ }
+ function capture(){
+  try{
+   if(!stream || video.readyState<2 || !video.videoWidth || !video.videoHeight){say('映像の準備ができていません。カメラ起動後、映像が表示されてから撮影してください。');return;}
+   // プレビューと同じ縦長3:4になるよう、映像中央を切り出す
+   const sw=video.videoWidth, sh=video.videoHeight, targetRatio=3/4;
+   let sx=0, sy=0, sWidth=sw, sHeight=sh;
+   if(sw/sh>targetRatio){sWidth=Math.round(sh*targetRatio);sx=Math.round((sw-sWidth)/2);}else{sHeight=Math.round(sw/targetRatio);sy=Math.round((sh-sHeight)/2);}
+   const canvas=document.createElement('canvas');canvas.width=900;canvas.height=1200;
+   const ctx=canvas.getContext('2d');if(!ctx)throw new Error('画像処理を開始できません');
+   ctx.drawImage(video,sx,sy,sWidth,sHeight,0,0,canvas.width,canvas.height);
+   photos[currentDir]=canvas.toDataURL('image/jpeg',0.9); renderShots();
+   say(currentDir+'を撮影しました。写真欄に表示されています。必要なら同じ方向を撮り直せます。');
+  }catch(e){say('撮影に失敗しました：'+e.message);}
+ }
+ function renderShots(){
+  const root=$('shots');root.replaceChildren();
+  directions.forEach(dir=>{const card=document.createElement('div');card.className='shot';if(photos[dir]){const img=document.createElement('img');img.src=photos[dir];img.alt=dir+'の写真';const cap=document.createElement('div');cap.className='caption';cap.textContent=dir+'・撮影済み';card.append(img,cap);}else{const empty=document.createElement('div');empty.className='empty';empty.textContent=dir+'\n未撮影';empty.style.whiteSpace='pre-line';card.append(empty);}root.append(card);});
+  saveBtn.disabled=!directions.some(d=>photos[d]);
+ }
+ dirButtons.forEach(btn=>btn.addEventListener('click',()=>{currentDir=btn.dataset.dir;dirButtons.forEach(b=>b.classList.toggle('active',b===btn));say(currentDir+'を撮影します。');}));
+ startBtn.addEventListener('click',startCamera);
+ switchBtn.addEventListener('click',()=>{facing=facing==='environment'?'user':'environment';startCamera();});
+ captureBtn.addEventListener('click',capture);
+ saveBtn.addEventListener('click',()=>{
+  const available=directions.filter(d=>photos[d]);if(!available.length)return;
+  available.forEach((dir,index)=>{const a=document.createElement('a');a.href=photos[dir];a.download='姿勢写真_'+dir+'.jpg';document.body.appendChild(a);a.click();a.remove();});
+  say(available.length+'枚の保存を開始しました。iPhoneではSafariのダウンロード一覧、または共有メニューをご確認ください。');
+ });
+ $('clearBtn').addEventListener('click',()=>{directions.forEach(d=>photos[d]=null);renderShots();say('撮影した写真を消去しました。');});
+ window.addEventListener('pagehide',stopStream);
+})();
 </script>
-</body></html>
+</body>
+</html>
