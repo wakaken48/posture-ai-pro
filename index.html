@@ -4,48 +4,88 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#236b45">
-<title>わかば姿勢チェック</title>
+<title>わかば姿勢チェック v5 AI姿勢認識</title>
 <style>
 :root{--green:#236b45;--pale:#eaf4ed;--ink:#203129;--muted:#64736a;--line:#d9e4dc}
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#f5f8f5;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif}header{background:var(--green);color:#fff;padding:16px;text-align:center}header h1{font-size:20px;margin:0 0 4px}header p{font-size:12px;margin:0}main{width:min(100%,560px);margin:0 auto;padding:14px}.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:14px;box-shadow:0 2px 8px #183b2410}label{display:block;font-weight:700;font-size:14px;margin-bottom:9px}.directions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.directions button{min-height:44px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:9px 4px;font-weight:700;font-size:15px}.directions button.active{background:var(--pale);border:2px solid var(--green);color:var(--green)}.stage-wrap{display:flex;justify-content:center}.stage{position:relative;width:min(100%,390px);aspect-ratio:3/4;background:#101713;border-radius:12px;overflow:hidden;margin:0 auto}.stage video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;background:#101713}.guide{position:absolute;inset:6%;border:1px dashed #ffffffaa;border-radius:45% 45% 14% 14%;pointer-events:none}.hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;color:#fff;background:#101713;font-size:14px;pointer-events:none}.actions{display:flex;gap:8px;margin-top:11px}.action{flex:1;min-height:48px;border:0;border-radius:11px;padding:12px 10px;font-size:15px;font-weight:700;background:var(--green);color:#fff}.secondary{background:#e9efea;color:var(--ink)}button:disabled{opacity:.45}.status{font-size:13px;color:var(--muted);margin:10px 0 0;line-height:1.55;min-height:1.5em}.shots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.shot{min-width:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fafcfa}.shot img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;background:#18221b}.shot .empty{aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--muted);font-size:12px}.shot .caption{font-size:12px;padding:7px 2px;text-align:center;font-weight:700}.foot{font-size:11px;color:var(--muted);line-height:1.6;padding:0 4px 20px}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#f5f8f5;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif}header{background:var(--green);color:#fff;padding:16px;text-align:center}header h1{font-size:20px;margin:0 0 4px}header p{font-size:12px;margin:0}main{width:min(100%,560px);margin:0 auto;padding:14px}.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:14px;box-shadow:0 2px 8px #183b2410}label{display:block;font-weight:700;font-size:14px;margin-bottom:9px}.directions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.directions button{min-height:44px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:9px 4px;font-weight:700;font-size:15px}.directions button.active{background:var(--pale);border:2px solid var(--green);color:var(--green)}.stage-wrap{display:flex;justify-content:center}.stage{position:relative;width:min(100%,390px);aspect-ratio:3/4;background:#101713;border-radius:12px;overflow:hidden;margin:0 auto}.stage video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;background:#101713}.guide{position:absolute;inset:6%;border:1px dashed #ffffffaa;border-radius:45% 45% 14% 14%;pointer-events:none}.flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:5}.flash.active{animation:cameraFlash .22s ease-out}@keyframes cameraFlash{0%{opacity:.95}100%{opacity:0}}.capture-toast{position:absolute;left:50%;top:14px;transform:translateX(-50%);z-index:6;background:#236b45;color:#fff;padding:9px 16px;border-radius:999px;font-size:14px;font-weight:800;opacity:0;pointer-events:none;white-space:nowrap}.capture-toast.show{animation:toastPop 1.25s ease-out}@keyframes toastPop{0%{opacity:0;transform:translate(-50%,-8px)}15%,75%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,-5px)}}.latest{display:none;align-items:center;gap:12px;margin-top:12px;padding:10px;background:#eaf4ed;border:1px solid #b9d7c2;border-radius:12px}.latest.visible{display:flex}.latest img{width:76px;height:102px;object-fit:cover;border-radius:8px;background:#18221b}.latest strong{display:block;color:#236b45;font-size:15px;margin-bottom:5px}.latest span{font-size:12px;color:#42564a;line-height:1.5}.hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;color:#fff;background:#101713;font-size:14px;pointer-events:none}.actions{display:flex;gap:8px;margin-top:11px}.action{flex:1;min-height:48px;border:0;border-radius:11px;padding:12px 10px;font-size:15px;font-weight:700;background:var(--green);color:#fff}.secondary{background:#e9efea;color:var(--ink)}button:disabled{opacity:.45}.status{font-size:13px;color:var(--muted);margin:10px 0 0;line-height:1.55;min-height:1.5em}.shots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.shot{min-width:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fafcfa}.shot img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;background:#18221b}.shot .empty{aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--muted);font-size:12px}.shot .caption{font-size:12px;padding:7px 2px;text-align:center;font-weight:700}.analysis-card{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fbfdfb}.analysis-card h3{font-size:15px;margin:0 0 8px;color:var(--green)}.analysis-card img{display:block;width:100%;max-width:260px;margin:0 auto;border-radius:8px;background:#18221b}.analysis-card p{font-size:13px;line-height:1.55;margin:8px 0 0}.ai-pill{display:inline-block;padding:4px 8px;border-radius:999px;background:#eaf4ed;color:#236b45;font-size:12px;font-weight:700;margin-top:6px}.foot{font-size:11px;color:var(--muted);line-height:1.6;padding:0 4px 20px}
 </style>
 </head>
 <body>
-<header><h1>わかば姿勢チェック</h1><p>正面・側面・背面を縦向きで撮影</p></header>
+<header><h1>わかば姿勢チェック</h1><p>正面・側面・背面の撮影とAI骨格認識</p></header>
 <main>
 <section class="panel">
-<label>① 撮影する方向</label>
+<label for="personName">① お名前</label>
+<input id="personName" type="text" autocomplete="name" placeholder="患者様のお名前を入力" style="display:block;width:100%;min-height:48px;padding:12px;border:1px solid var(--line);border-radius:10px;font-size:16px;background:#fff;color:var(--ink);">
+<p class="status" style="margin-top:6px">入力したお名前は写真の保存ファイル名にも使われます。</p>
+</section>
+<section class="panel">
+<label>② 撮影する方向</label>
 <div class="directions" aria-label="撮影方向">
 <button type="button" class="active" data-dir="正面">正面</button><button type="button" data-dir="側面">側面</button><button type="button" data-dir="背面">背面</button>
 </div>
 <div style="height:14px"></div>
-<label>② カメラ映像（縦長 3:4）</label>
-<div class="stage-wrap"><div class="stage"><video id="video" autoplay muted playsinline></video><div class="hint" id="hint">「カメラを起動」を押してください</div><div class="guide" aria-hidden="true"></div></div></div>
+<label>③ カメラ映像（縦長 3:4）</label>
+<div class="stage-wrap"><div class="stage"><video id="video" autoplay muted playsinline></video><div class="hint" id="hint">「カメラを起動」を押してください</div><div class="guide" aria-hidden="true"></div><div class="flash" id="flash" aria-hidden="true"></div><div class="capture-toast" id="captureToast" aria-live="polite">撮影しました！</div></div></div>
 <div class="actions"><button type="button" class="action" id="startBtn">カメラを起動</button><button type="button" class="action secondary" id="switchBtn" disabled>カメラ切替</button></div>
 <div class="actions"><button type="button" class="action" id="captureBtn" disabled>● 撮影する</button></div>
+<div class="latest" id="latestPreview" aria-live="polite"><img id="latestImage" alt="直前に撮影した写真"><div><strong id="latestTitle">撮影しました！</strong><span id="latestText">撮影した写真をここで確認できます。</span></div></div>
 <p class="status" id="status" role="status" aria-live="polite">カメラ起動後、方向を選んで撮影してください。</p>
 </section>
 <section class="panel">
-<label>③ 撮影した写真</label>
+<label>④ 撮影した写真</label>
 <div class="shots" id="shots">
 <div class="shot"><div class="empty">正面<br>未撮影</div></div><div class="shot"><div class="empty">側面<br>未撮影</div></div><div class="shot"><div class="empty">背面<br>未撮影</div></div>
 </div>
+<div class="actions"><button type="button" class="action" id="analyzeBtn" disabled>AIで姿勢を分析</button></div>
+<p class="status" id="aiStatus" role="status" aria-live="polite">写真を撮影するとAI分析ができるようになります。初回はAIモデルの読み込みに通信が必要です。</p>
+<div id="analysisResults" style="display:grid;gap:12px;margin-top:12px"></div>
 <div class="actions"><button type="button" class="action secondary" id="saveBtn" disabled>撮影写真を保存</button><button type="button" class="action secondary" id="clearBtn">写真を消去</button></div>
-<p class="status">写真はこの端末内だけで処理し、サーバーには送信しません。保存は撮影後に方向ごとに行えます。</p>
+<p class="status">AI解析はこの端末内で実行し、撮影写真をサーバーへ送信しません。初回のAIモデル取得にはインターネット接続が必要です。</p>
 </section>
-<p class="foot">※この段階は撮影・確認機能です。姿勢の自動判定や医療的な診断は行いません。撮影する方の同意を得てご利用ください。</p>
+<p class="foot">※AIは画像上の骨格位置を推定する補助機能です。姿勢の良否や病気の診断は行いません。撮影する方の同意を得てご利用ください。</p>
 </main>
+<script type="module">
+import { FilesetResolver, PoseLandmarker } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/vision_bundle.mjs";
+const MODEL_URL = "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task";
+let landmarkerPromise = null;
+const poseConnections = [[0,1],[1,2],[2,3],[3,7],[0,4],[4,5],[5,6],[6,8],[9,10],[11,12],[11,13],[13,15],[15,17],[15,19],[15,21],[17,19],[12,14],[14,16],[16,18],[16,20],[16,22],[18,20],[11,23],[12,24],[23,24],[23,25],[25,27],[27,29],[29,31],[27,31],[24,26],[26,28],[28,30],[30,32],[28,32]];
+async function getPoseLandmarker(){
+ if(!landmarkerPromise){
+  landmarkerPromise=(async()=>{
+   const vision=await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm");
+   return await PoseLandmarker.createFromOptions(vision,{baseOptions:{modelAssetPath:MODEL_URL,delegate:"CPU"},runningMode:"IMAGE",numPoses:1});
+  })().catch(err=>{landmarkerPromise=null;throw err;});
+ }
+ return landmarkerPromise;
+}
+window.__postureAI={getPoseLandmarker,poseConnections};
+</script>
 <script>
 (() => {
  'use strict';
  const $ = id => document.getElementById(id);
  const video=$('video'), hint=$('hint'), status=$('status');
+ const flash=$('flash'), captureToast=$('captureToast');
+ const analyzeBtn=$('analyzeBtn'), aiStatus=$('aiStatus'), analysisResults=$('analysisResults');
+ const analysisImages={正面:null,側面:null,背面:null};
+ let audioContext=null;
  const startBtn=$('startBtn'), switchBtn=$('switchBtn'), captureBtn=$('captureBtn'), saveBtn=$('saveBtn');
  const directions=['正面','側面','背面'];
  const photos={正面:null,側面:null,背面:null};
  let stream=null, facing='environment', currentDir='正面';
  const dirButtons=Array.from(document.querySelectorAll('[data-dir]'));
  function say(message){status.textContent=message;}
+ function feedback(dir, imageUrl){
+  // 撮影直後に画面内で分かる視覚フィードバック
+  flash.classList.remove('active'); captureToast.classList.remove('show');
+  void flash.offsetWidth; void captureToast.offsetWidth;
+  flash.classList.add('active'); captureToast.classList.add('show');
+  $('latestImage').src=imageUrl; $('latestTitle').textContent=dir+'を撮影しました！';
+  $('latestText').textContent='写真はこの画面のすぐ下で確認できます。撮り直す場合はもう一度シャッターを押してください。';
+  $('latestPreview').classList.add('visible');
+  // iPhone Safariでは消音設定等により音が鳴らない場合があるため、画面表示も併用
+  try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;if(!audioContext)audioContext=new AC();if(audioContext.state==='suspended')audioContext.resume();const now=audioContext.currentTime;[0,0.12].forEach((offset,i)=>{const osc=audioContext.createOscillator(),gain=audioContext.createGain();osc.type='sine';osc.frequency.value=i?1320:990;gain.gain.setValueAtTime(0.0001,now+offset);gain.gain.exponentialRampToValueAtTime(0.12,now+offset+0.012);gain.gain.exponentialRampToValueAtTime(0.0001,now+offset+0.085);osc.connect(gain);gain.connect(audioContext.destination);osc.start(now+offset);osc.stop(now+offset+0.09);});}catch(e){/* 音声が使えない端末でも撮影自体は継続 */}
+ }
  function stopStream(){if(stream){stream.getTracks().forEach(track=>track.stop());stream=null;}video.srcObject=null;captureBtn.disabled=true;}
  async function startCamera(){
   if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){say('カメラを利用できません。iPhoneのSafariでhttps://から始まるURLを開いてください。');return;}
@@ -70,25 +110,61 @@
    const canvas=document.createElement('canvas');canvas.width=900;canvas.height=1200;
    const ctx=canvas.getContext('2d');if(!ctx)throw new Error('画像処理を開始できません');
    ctx.drawImage(video,sx,sy,sWidth,sHeight,0,0,canvas.width,canvas.height);
-   photos[currentDir]=canvas.toDataURL('image/jpeg',0.9); renderShots();
-   say(currentDir+'を撮影しました。写真欄に表示されています。必要なら同じ方向を撮り直せます。');
+   photos[currentDir]=canvas.toDataURL('image/jpeg',0.9); analysisImages[currentDir]=null; analysisResults.replaceChildren(); renderShots();
+   feedback(currentDir,photos[currentDir]);
+   say(currentDir+'を撮影しました。写真は撮影画面のすぐ下に表示されています。');
   }catch(e){say('撮影に失敗しました：'+e.message);}
  }
  function renderShots(){
   const root=$('shots');root.replaceChildren();
   directions.forEach(dir=>{const card=document.createElement('div');card.className='shot';if(photos[dir]){const img=document.createElement('img');img.src=photos[dir];img.alt=dir+'の写真';const cap=document.createElement('div');cap.className='caption';cap.textContent=dir+'・撮影済み';card.append(img,cap);}else{const empty=document.createElement('div');empty.className='empty';empty.textContent=dir+'\n未撮影';empty.style.whiteSpace='pre-line';card.append(empty);}root.append(card);});
   saveBtn.disabled=!directions.some(d=>photos[d]);
+  analyzeBtn.disabled=!directions.some(d=>photos[d]);
  }
+ async function analyzePhotos(){
+  const available=directions.filter(d=>photos[d]);
+  if(!available.length){aiStatus.textContent='先に写真を撮影してください。';return;}
+  analyzeBtn.disabled=true; analysisResults.replaceChildren(); aiStatus.textContent='AIモデルを準備しています。初回は少し時間がかかります…';
+  try{
+   const landmarker=await window.__postureAI.getPoseLandmarker();
+   for(const dir of available){
+    aiStatus.textContent=dir+'の写真を解析しています…';
+    const img=new Image(); img.src=photos[dir];
+    await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(new Error(dir+'の写真を読み込めませんでした'));});
+    const result=landmarker.detect(img);
+    const landmarks=result.poseLandmarks && result.poseLandmarks[0];
+    const card=document.createElement('div');card.className='analysis-card';
+    const title=document.createElement('h3');title.textContent=dir+'のAI骨格認識';card.append(title);
+    if(!landmarks || !landmarks.length){
+     const msg=document.createElement('p');msg.textContent='身体の骨格を検出できませんでした。全身が写っているか、明るさや背景を確認して撮り直してください。';card.append(msg);analysisResults.append(card);continue;
+    }
+    const canvas=document.createElement('canvas');canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;
+    const ctx=canvas.getContext('2d');ctx.drawImage(img,0,0);
+    ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle='#00d084';ctx.lineWidth=Math.max(3,canvas.width/180);
+    for(const [a,b] of window.__postureAI.poseConnections){const p=landmarks[a],q=landmarks[b];if(p&&q&&(p.visibility??1)>.35&&(q.visibility??1)>.35){ctx.beginPath();ctx.moveTo(p.x*canvas.width,p.y*canvas.height);ctx.lineTo(q.x*canvas.width,q.y*canvas.height);ctx.stroke();}}
+    landmarks.forEach((p,i)=>{if((p.visibility??1)>.35){ctx.beginPath();ctx.arc(p.x*canvas.width,p.y*canvas.height,Math.max(3,canvas.width/115),0,Math.PI*2);ctx.fillStyle=[11,12,23,24,25,26,27,28].includes(i)?'#ffb020':'#ffffff';ctx.fill();ctx.lineWidth=Math.max(2,canvas.width/300);ctx.strokeStyle='#135d3b';ctx.stroke();}});
+    const out=document.createElement('img');out.src=canvas.toDataURL('image/jpeg',.88);out.alt=dir+' AI骨格認識結果';card.append(out);
+    const visible=landmarks.filter(p=>(p.visibility??1)>=.5).length;
+    const badge=document.createElement('span');badge.className='ai-pill';badge.textContent='骨格ポイント '+visible+' / '+landmarks.length+'か所を検出';card.append(badge);
+    const note=document.createElement('p');note.textContent='緑の線と点がAIの推定した身体の位置です。写り方や衣服などで検出精度は変わります。';card.append(note);
+    analysisImages[dir]=out.src;analysisResults.append(card);
+   }
+   aiStatus.textContent='解析が完了しました。結果はこの画面に表示されています。';
+  }catch(e){
+   aiStatus.textContent='AIの読み込み・解析に失敗しました。通信状態を確認して、もう一度お試しください。詳細：'+(e.message||e);
+  }finally{analyzeBtn.disabled=!directions.some(d=>photos[d]);}
+ }
+ analyzeBtn.addEventListener('click',analyzePhotos);
  dirButtons.forEach(btn=>btn.addEventListener('click',()=>{currentDir=btn.dataset.dir;dirButtons.forEach(b=>b.classList.toggle('active',b===btn));say(currentDir+'を撮影します。');}));
  startBtn.addEventListener('click',startCamera);
  switchBtn.addEventListener('click',()=>{facing=facing==='environment'?'user':'environment';startCamera();});
  captureBtn.addEventListener('click',capture);
  saveBtn.addEventListener('click',()=>{
   const available=directions.filter(d=>photos[d]);if(!available.length)return;
-  available.forEach((dir,index)=>{const a=document.createElement('a');a.href=photos[dir];a.download='姿勢写真_'+dir+'.jpg';document.body.appendChild(a);a.click();a.remove();});
+  available.forEach((dir,index)=>{const a=document.createElement('a');a.href=photos[dir];const personName=($('personName').value.trim()||'名前未入力').replace(/[\\/:*?"<>|]/g,'_');a.download='姿勢写真_'+personName+'_'+dir+'.jpg';document.body.appendChild(a);a.click();a.remove();});
   say(available.length+'枚の保存を開始しました。iPhoneではSafariのダウンロード一覧、または共有メニューをご確認ください。');
  });
- $('clearBtn').addEventListener('click',()=>{directions.forEach(d=>photos[d]=null);renderShots();say('撮影した写真を消去しました。');});
+ $('clearBtn').addEventListener('click',()=>{directions.forEach(d=>{photos[d]=null;analysisImages[d]=null;});analysisResults.replaceChildren();aiStatus.textContent='写真を撮影するとAI分析ができるようになります。';renderShots();$('latestPreview').classList.remove('visible');$('latestImage').removeAttribute('src');say('撮影した写真を消去しました。');});
  window.addEventListener('pagehide',stopStream);
 })();
 </script>
